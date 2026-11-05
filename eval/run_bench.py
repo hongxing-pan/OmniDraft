@@ -48,7 +48,11 @@ def load_samples(dataset, limit, offset=0):
     elif dataset == "vme":
         pack = f"{base}/pack1000/videomme_1000.json"
         parquet = f"{base}/VideoMME/videomme/test-00000-of-00001.parquet"
-        if os.path.exists(pack):
+        if os.environ.get("OSELECT_FULL") == "1":
+            import pyarrow.parquet as pq
+            rows = pq.read_table(parquet).to_pylist()
+            rows = rows[offset:offset + limit]
+        elif os.path.exists(pack):
             rows = json.load(open(pack))
             rows = rows[offset:offset + limit]
         else:

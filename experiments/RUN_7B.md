@@ -1,6 +1,6 @@
 # 跑 Qwen2.5-Omni-7B
 
-3B 和 7B 用同一套评测。7B 只换模型路径和结果目录。不要和 3B 的分数混在一张表里比较不同机器的结果；同一张表里的 7B 行必须来自同一次、同一套代码。
+7B 跑三个 benchmark 的全量，不是子集。DailyOmni 1197 题，WorldSense 全部任务，VideoMME 2700 题（short、medium、long 都要）。3B 和 7B 用同一套评测。7B 只换模型路径和结果目录。不要和 3B 的分数混在一张表里比较不同机器的结果；同一张表里的 7B 行必须来自同一次、同一套代码。
 
 仓库：https://github.com/hongxing-pan/OmniDraft
 
@@ -30,7 +30,7 @@ export NLTK_DATA=/path/to/nltk_data
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
 ```
 
-`OSELECT_FULL=1` 让 DailyOmni 读全量 `qa.json`。不设的话，如果数据目录里有 `pack1000/daily_qa.json`，只会跑前 1000 题。
+`OSELECT_FULL=1` 必须设置。它让 DailyOmni 读全量 `qa.json`，让 VideoMME 读官方 parquet 的 2700 题。不设的话，数据目录里若有 `pack1000`，这两个数据集都只会跑前 1000 题。WorldSense 本来就是全量标注。
 
 ffmpeg 必须在 `PATH` 里，否则 mp4 的音频会报 `NoBackendError`。一张卡一个进程，用 `CUDA_VISIBLE_DEVICES` 指定。不要两个任务共用一张卡。
 
@@ -77,6 +77,12 @@ OUT=/path/to/results/full7b
 ```bash
 $PY $ROOT/eval/run_bench.py --dataset daily --method full \
   --model_path $MODEL --output_dir $OUT/full/daily --nframes 128 --limit 2000
+
+$PY $ROOT/eval/run_bench.py --dataset ws --method full \
+  --model_path $MODEL --output_dir $OUT/full/ws --nframes 128 --limit 4000
+
+$PY $ROOT/eval/run_bench.py --dataset vme --method full \
+  --model_path $MODEL --output_dir $OUT/full/vme --nframes 512 --limit 3000
 ```
 
 Random，保留 55%：
