@@ -33,7 +33,7 @@ d_t = (1-\lambda) u_t + \lambda \tilde R_t
 | DyCoke | baseline |
 | Random | baseline |
 
-评测入口在服务器的 `OmniZip/eval/run_bench.py`。3B 主表和消融计划见 `experiments/PLAN.md`。
+7B 怎么跑见 `experiments/RUN_7B.md`。3B 主表和消融见 `experiments/PLAN.md`。
 
 ## 文件
 
