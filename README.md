@@ -4,7 +4,7 @@ Qwen2.5-Omni 上的问题相关音视频 token 压缩。项目名是 OmniDraft�
 
 ## 当前方法
 
-预算按模态分开。草稿是该模态**全部 token** 的 5%，并且不超过最终预算。视频草稿还至少覆盖每个时间片一个 token。探针层是第 12 层。λ = 0.5。门控关闭。执行是完整重跑，不拼接。
+预算按模态分开。草稿是该模态**全部 token** 的 15%，并且不超过最终预算。视频草稿还至少覆盖每个时间片一个 token。探针层是第 12 层。λ = 0.5。门控关闭。执行是完整重跑，不拼接。
 
 草稿带着原来的三维位置走 Thinker 前 12 层。真问题和固定空问题 “What is happening in the video?” 各读一次缓存。
 
@@ -44,4 +44,12 @@ d_t = (1-\lambda) u_t + \lambda \tilde R_t
 - `omnianchor.py`：音频锚点合并
 - `omnispan.py`：时间坐标和 mel 对齐
 
-依赖 PyTorch、Transformers、Numba。
+依赖见 `requirements-test.txt` 和 `.env.example`。`modeling_qwen2_5_omni.py` 和 `qwen-omni-utils/` 都在仓库里。视频数据不在仓库里，路径写在 `.env.example`。
+
+跑之前：
+
+```bash
+export PYTHONPATH=$PWD:$PWD/qwen-omni-utils/src
+export OSELECT_DATA=/path/to/data
+export PATH=/path/to/ffmpeg:$PATH
+```

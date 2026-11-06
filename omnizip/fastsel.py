@@ -129,8 +129,12 @@ def video_graph(raw, coords, cross=True, device=None):
     return to_csr(nb, cosine_table(raw, nb, device))
 
 
-def video_order(graph, scores, coords, budget, use_attn=True, caps=None, cap_from=None, weight_mul=None):
-    """Pick order of omnifac.select_video. caps[k] bounds picks in slice k after cap_from."""
+def video_order(graph, scores, coords, budget, use_attn=True, caps=None, cap_from=None, seed_order=None, token_mul=None):
+    """Pick order of omnifac.select_video. caps[k] bounds picks in slice k after cap_from.
+
+    seed_order freezes an already chosen prefix (including the per-frame anchors) and
+    only the tokens after it are subject to caps.
+    """
     indptr, indices, data = graph
     n = int(indptr.shape[0] - 1)
     frames = coords[:, 0].astype(np.int64)
@@ -145,10 +149,31 @@ def video_order(graph, scores, coords, budget, use_attn=True, caps=None, cap_fro
         total = float(attn.sum())
         attn = attn / total if total > 0 else np.full(n, 1.0 / n)
     weight = 1.0 + n * attn if use_attn else np.ones(n, dtype=np.float64)
-    if weight_mul is not None:
-        weight = weight * np.asarray(weight_mul, dtype=np.float64).reshape(-1)
+    if token_mul is not None:
+        weight = weight * np.maximum(np.asarray(token_mul, dtype=np.float64).reshape(-1), 0.0)
     chosen = np.zeros(n, dtype=np.uint8)
     covered = np.zeros(n, dtype=np.float64)
+    if seed_order is not None:
+        seed_order = np.asarray(seed_order, dtype=np.int64).reshape(-1)
+        budget = int(max(seed_order.shape[0], min(n, budget)))
+        order = np.full(budget, -1, dtype=np.int64)
+        done = 0
+        for pick in seed_order.tolist():
+            chosen[int(pick)] = 1
+            order[done] = int(pick)
+            done += 1
+            _cover(indptr, indices, data, covered, int(pick))
+        n_slices = int(frames.max()) + 1
+        if caps is None:
+            caps_arr = np.full(n_slices, n, dtype=np.int64)
+            cap_from = budget
+        else:
+            caps_arr = np.asarray(caps, dtype=np.int64)
+            cap_from = done
+        counts = np.zeros(n_slices, dtype=np.int64)
+        done = _batch_greedy(indptr, indices, data, weight, covered, chosen, order, done, budget,
+                             frames, caps_arr, counts, cap_from)
+        return order[:done]
     order = np.full(budget, -1, dtype=np.int64)
     done = 0
     for ids in first.values():
@@ -197,15 +222,13 @@ def allocate(total, dist, cap):
     return out
 
 
-def audio_merge_tree(raw, scores, acoustic, stop_k, snap_k, weight_mul=None):
+def audio_merge_tree(raw, scores, acoustic, stop_k, snap_k):
     """Anchor-only merge down to stop_k, recording each merge and the snap_k anchors."""
     raw_np = raw.detach().float().cpu().numpy() if hasattr(raw, "detach") else np.asarray(raw, dtype=np.float64)
     n = int(raw_np.shape[0])
     stop_k = int(max(1, min(n, stop_k)))
     scores_n = _normalize_scores(None if scores is None else scores, n)
     weights = 1.0 + n * scores_n
-    if weight_mul is not None:
-        weights = weights * np.asarray(weight_mul, dtype=np.float64).reshape(-1)
     frames = np.zeros(n, dtype=np.int64)
     regs = _build_regions(_energy_features(raw_np), raw_np, weights, scores_n, frames)
     extras = None
@@ -264,25 +287,45 @@ def audio_merge_tree(raw, scores, acoustic, stop_k, snap_k, weight_mul=None):
     return {"merges": merges, "final": final, "snap": final if snap is None else snap, "roots": roots}
 
 
-def audio_undo(tree, target_k, slice_of=None, caps=None):
-    """Undo merges newest-first until target_k anchors; caps bound added anchors per slice."""
+def audio_undo(tree, target_k, slice_of=None, caps=None, replay=None):
+    """Undo merges newest-first until target_k anchors; caps bound added anchors per slice.
+
+    replay is a list of merge ids already undone (a previous round). They are applied
+    first, without caps, and the returned trace is those ids plus the new ones.
+    """
     merges = tree["merges"]
     anchors = set(tree["final"])
     need = int(target_k) - len(anchors)
+    replay = [int(s) for s in (replay or [])]
     heap = [-s for s in tree["roots"]]
     heapq.heapify(heap)
     counts = None if caps is None else np.zeros(len(caps), dtype=np.int64)
     deferred = []
+    done_undo = set()
+    trace = []
 
     def undo(s):
+        s = int(s)
+        if s in done_undo:
+            return
+        done_undo.add(s)
+        trace.append(s)
         before_a, before_b, after, child_a, child_b = merges[s]
         anchors.add(before_b if after == before_a else before_a)
         for c in (child_a, child_b):
             if c >= 0:
                 heapq.heappush(heap, -c)
 
+    for s in replay:
+        undo(s)
+        need -= 1
+    heap = [x for x in heap if -int(x) not in done_undo]
+    heapq.heapify(heap)
+
     while need > 0 and heap:
         s = -heapq.heappop(heap)
+        if int(s) in done_undo:
+            continue
         if counts is not None:
             before_a, before_b, after, _ca, _cb = merges[s]
             k = slice_of[before_b if after == before_a else before_a]
@@ -296,6 +339,10 @@ def audio_undo(tree, target_k, slice_of=None, caps=None):
         for s in deferred:
             heapq.heappush(heap, -s)
         while need > 0 and heap:
-            undo(-heapq.heappop(heap))
+            s = -heapq.heappop(heap)
+            if int(s) in done_undo:
+                continue
+            undo(s)
             need -= 1
+    tree["undo_trace"] = trace
     return sorted(anchors)

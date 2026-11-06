@@ -166,7 +166,7 @@ def main():
             if not o.get("oom") and not o.get("fail"):
                 scored += 1
                 correct += int(bool(o.get("is_correct")))
-            continue
+                continue
         opts = sample["options"]
         if isinstance(opts, list):
             opts = "\n".join(str(x) for x in opts)

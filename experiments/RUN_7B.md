@@ -116,7 +116,7 @@ OmniDraft。这是我们的方法，不是 baseline。
 ```bash
 --method omnidraft \
   --boost gap \
-  --draft_ratio 0.05 \
+  --draft_ratio 0.15 \
   --probe_layer 12 \
   --lam 0.5 \
   --gate 0 \
@@ -134,7 +134,7 @@ OmniDraft。这是我们的方法，不是 baseline。
 |---|---|---|
 | `--keep_ratio` | 0.45 或 0.30；Random 0.55；DyCoke 0.50 | 每个模态最终留下的 token 占全部 token 的比例 |
 | `--rho` | OmniZip：0.55 或 0.70 | 只给 OmniZip 用，表示剪掉多少 |
-| `--draft_ratio` | 0.05 | 草稿占该模态全部 token 的比例，不是占保留预算的比例。视频另外至少每个时间片 1 个 |
+| `--draft_ratio` | 0.15 | 草稿占该模态全部 token 的比例，不是占保留预算的比例。视频另外至少每个时间片 1 个 |
 | `--probe_layer` | 12 | 在第几层读草稿 attention |
 | `--lam` | 0.5 | 剩余名额里按问题需求分配的比例。0 等于纯时空锚点 |
 | `--boost gap` | 开 | 代表缺口，只改视频各时间片的配额 |

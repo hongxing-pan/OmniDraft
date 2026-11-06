@@ -159,7 +159,7 @@ def _build_regions(feat, raw, weights, scores, frames):
     return regs
 
 
-def _merge_until(regs, edges, budget, anchor_only, extras=None, snap_at=None, snap=None):
+def _merge_until(regs, edges, budget, anchor_only, extras=None):
     heap = []
 
     def push(i, j):
@@ -197,8 +197,6 @@ def _merge_until(regs, edges, budget, anchor_only, extras=None, snap_at=None, sn
         for n in affected:
             push(i, n)
         alive -= 1
-        if snap is not None and snap_at is not None and alive == snap_at and "anchors" not in snap:
-            snap["anchors"] = [int(r.anchor) for r in regs if r.alive]
     return alive
 
 
@@ -275,37 +273,6 @@ def compress_tokens(raw, scores, budget, kind, coords=None, acoustic=None, ancho
     if n > budget:
         _merge_until(regs, edges, budget, anchor_only, extras)
     return _collect(regs, anchor_only), budget
-
-
-def audio_anchor_pair(raw, scores, acoustic, full_k, early_k):
-    """Anchors at two budgets from one merge. The smaller set is a subset."""
-    raw_np = raw.detach().float().cpu().numpy() if hasattr(raw, "detach") else np.asarray(raw, dtype=np.float64)
-    n = int(raw_np.shape[0])
-    if n == 0:
-        return [], []
-    full_k = int(max(1, min(n, full_k)))
-    early_k = int(max(1, min(full_k, early_k)))
-    scores = _normalize_scores(None if scores is None else scores, n)
-    weights = 1.0 + n * scores
-    feat = _energy_features(raw_np)
-    frames = np.zeros(n, dtype=np.int64)
-    regs = _build_regions(feat, raw_np, weights, scores, frames)
-    extras = None
-    if acoustic is not None:
-        ac = acoustic.detach().float().cpu().numpy() if hasattr(acoustic, "detach") else np.asarray(acoustic, dtype=np.float64)
-        extras = _build_regions(_energy_features(ac), ac, weights, scores, frames)
-    edges = _audio_edges(n)
-    _link(regs, edges)
-    if extras is not None:
-        _link(extras, edges)
-    snap = {}
-    if n > early_k:
-        _merge_until(regs, edges, early_k, True, extras, snap_at=full_k, snap=snap)
-    full_anchors = snap.get("anchors")
-    if full_anchors is None:
-        full_anchors = [int(r.anchor) for r in regs if r.alive]
-    early_anchors = [int(r.anchor) for r in regs if r.alive]
-    return early_anchors, full_anchors
 
 
 def omnanchor_keep_mask(
