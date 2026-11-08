@@ -1,0 +1,66 @@
+Sun Nov  8 04:39:49 AM CST 2026
+
+== vme ==
+row               avg      n   bad           short       medium         long
+full             66.4   2700     0            75.4         67.7         56.2
+random55         66.6   2700     0            73.7         68.4         57.6
+dycoke50         65.1   2700     0            73.1         66.2         56.0
+omnizip45        65.8   2700     0            74.3         67.3         55.7
+omnizip30        65.3   2700     0            73.1         66.4         56.3
+omniselect45     65.3   2700     0            72.7         67.2         56.0
+omniselect30     65.1   2700     0            72.0         66.6         56.8
+omnidraft45      66.8   2700     0            75.3         68.2         56.9
+omnidraft30      66.6   2700     0            74.1         69.4         56.2
+
+== ws ==
+row               avg      n   bad    Tech & Scien Culture & Po   Daily Life    Film & TV  Performance        Games       Sports        Music
+full             45.9   3171     1            51.6         50.8         46.4         44.1         43.8         42.5         40.0         46.1
+random55         44.4   3171     1            48.6         49.8         44.4         42.7         41.2         42.5         38.8         45.6
+dycoke50         42.1   3171     1            45.3         43.4         42.8         41.2         39.7         38.2         38.8         44.3
+omnizip45        44.6   3171     1            49.4         48.2         46.7         41.4         39.7         39.5         41.6         45.1
+omnizip30        43.0   3171     1            47.3         44.7         43.1         41.4         37.8         39.9         40.7         45.8
+omniselect45     43.4   3171     1            45.1         48.5         45.7         39.3         40.1         37.8         41.4         44.8
+omniselect30     41.2   3171     1            44.9         43.7         42.2         38.0         37.8         38.6         38.4         42.9
+omnidraft45      44.8   3171     1            48.6         49.2         46.3         41.4         41.6         41.6         41.9         44.8
+omnidraft30      43.7   3171     1            49.0         46.3         45.1         40.9         39.0         39.5         40.7         44.6
+
+== daily ==
+row               avg      n   bad    Context unde Event Sequen AV Event Ali  Comparative    Inference    Reasoning
+full             62.5   1197     0            53.4         57.2         52.1         69.5         79.2         76.0
+random55         59.6   1197     0            54.4         55.2         47.1         67.9         74.7         70.9
+dycoke50         54.1   1197     0            46.1         48.7         43.3         62.6         72.1         65.1
+omnizip45        59.6   1197     0            51.8         54.2         46.2         67.9         77.3         73.7
+omnizip30        57.1   1197     0            47.2         52.3         43.7         67.9         73.4         72.0
+omniselect45     58.4   1197     0            48.2         51.3         46.2         67.9         77.3         74.9
+omniselect30     55.3   1197     0            42.5         51.3         41.2         64.1         75.3         71.4
+omnidraft45      59.4   1197     0            50.8         53.6         47.9         68.7         76.6         72.6
+omnidraft30      58.3   1197     0            48.2         53.3         44.1         68.7         76.0         74.3
+
+== fail/oom after repass ==
+dycoke50/vme: 2700 files, 0 fail/oom, 15 short-fallback
+dycoke50/ws: 3172 files, 1 fail/oom, 0 short-fallback
+dycoke50/daily: 1197 files, 0 fail/oom, 2 short-fallback
+full/vme: 2700 files, 0 fail/oom, 15 short-fallback
+full/ws: 3172 files, 1 fail/oom, 0 short-fallback
+full/daily: 1197 files, 0 fail/oom, 2 short-fallback
+omnidraft30/vme: 2700 files, 0 fail/oom, 15 short-fallback
+omnidraft30/ws: 3172 files, 1 fail/oom, 0 short-fallback
+omnidraft30/daily: 1197 files, 0 fail/oom, 2 short-fallback
+omnidraft45/vme: 2700 files, 0 fail/oom, 15 short-fallback
+omnidraft45/ws: 3172 files, 1 fail/oom, 0 short-fallback
+omnidraft45/daily: 1197 files, 0 fail/oom, 2 short-fallback
+omniselect30/vme: 2700 files, 0 fail/oom, 15 short-fallback
+omniselect30/ws: 3172 files, 1 fail/oom, 0 short-fallback
+omniselect30/daily: 1197 files, 0 fail/oom, 2 short-fallback
+omniselect45/vme: 2700 files, 0 fail/oom, 15 short-fallback
+omniselect45/ws: 3172 files, 1 fail/oom, 0 short-fallback
+omniselect45/daily: 1197 files, 0 fail/oom, 2 short-fallback
+omnizip30/vme: 2700 files, 0 fail/oom, 15 short-fallback
+omnizip30/ws: 3172 files, 1 fail/oom, 0 short-fallback
+omnizip30/daily: 1197 files, 0 fail/oom, 2 short-fallback
+omnizip45/vme: 2700 files, 0 fail/oom, 15 short-fallback
+omnizip45/ws: 3172 files, 1 fail/oom, 0 short-fallback
+omnizip45/daily: 1197 files, 0 fail/oom, 2 short-fallback
+random55/vme: 2700 files, 0 fail/oom, 15 short-fallback
+random55/ws: 3172 files, 1 fail/oom, 0 short-fallback
+random55/daily: 1197 files, 0 fail/oom, 2 short-fallback
