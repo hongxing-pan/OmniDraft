@@ -1,0 +1,21 @@
+{
+ "batch_size": 1,
+ "dataset": "ws",
+ "max_new_tokens": 8,
+ "method": "omnidraft45",
+ "model": "/data/source_new02/olizhan/models/Qwen2.5-Omni-7B",
+ "nframes": 128,
+ "note": "each repeat re-decodes the media; no expert or probe reuse",
+ "params": {
+  "boost": "gap",
+  "draft_ratio": 0.05,
+  "exec": "rerun",
+  "gate": 0,
+  "keep_ratio": 0.45,
+  "lam": 0.5,
+  "method": "omnidraft",
+  "probe_layer": 12
+ },
+ "reps": 3,
+ "seed": 20261108
+}

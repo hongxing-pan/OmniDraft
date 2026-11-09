@@ -1,0 +1,18 @@
+{
+ "accuracy_on_subset": 56.7,
+ "attempted": 90,
+ "e2e_s_mean": 70.571,
+ "expert_s_mean": 40.83,
+ "gen_s_mean": 3.582,
+ "latency_s_mean": 44.55,
+ "nframes": 128,
+ "out_tokens_mean": 7.533,
+ "peak_mem_gb_mean": 22.53,
+ "peak_mem_max_gb": 23.02,
+ "prefill_ms_mean": 291.17,
+ "prep_s_mean": 24.962,
+ "questions": 30,
+ "reps": 3,
+ "seed": 20261108,
+ "successful": 90
+}

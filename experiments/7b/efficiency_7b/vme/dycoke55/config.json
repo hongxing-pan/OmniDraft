@@ -1,0 +1,15 @@
+{
+ "batch_size": 1,
+ "dataset": "vme",
+ "max_new_tokens": 8,
+ "method": "dycoke55",
+ "model": "/data/source_new02/olizhan/models/Qwen2.5-Omni-7B",
+ "nframes": 512,
+ "note": "each repeat re-decodes the media; no expert or probe reuse",
+ "params": {
+  "keep_ratio": 0.55,
+  "method": "dycoke"
+ },
+ "reps": 3,
+ "seed": 20261108
+}

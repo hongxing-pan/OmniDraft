@@ -1,0 +1,14 @@
+{
+ "batch_size": 1,
+ "dataset": "vme",
+ "max_new_tokens": 8,
+ "method": "full",
+ "model": "/data/source_new02/olizhan/models/Qwen2.5-Omni-7B",
+ "nframes": 512,
+ "note": "each repeat re-decodes the media; no expert or probe reuse",
+ "params": {
+  "method": "full"
+ },
+ "reps": 3,
+ "seed": 20261108
+}

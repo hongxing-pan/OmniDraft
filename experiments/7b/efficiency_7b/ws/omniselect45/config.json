@@ -1,0 +1,15 @@
+{
+ "batch_size": 1,
+ "dataset": "ws",
+ "max_new_tokens": 8,
+ "method": "omniselect45",
+ "model": "/data/source_new02/olizhan/models/Qwen2.5-Omni-7B",
+ "nframes": 128,
+ "note": "each repeat re-decodes the media; no expert or probe reuse",
+ "params": {
+  "keep_ratio": 0.45,
+  "method": "omniselect"
+ },
+ "reps": 3,
+ "seed": 20261108
+}
