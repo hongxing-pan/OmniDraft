@@ -1,0 +1,11 @@
+{
+ "accuracy": 56.38,
+ "completed": 149,
+ "correct": 84,
+ "e2e_s_mean": 3.777,
+ "fail_or_oom": 0,
+ "latency_s_mean": 2.33,
+ "nshards": 8,
+ "probe_ms_mean": 0.0,
+ "shard": 6
+}
